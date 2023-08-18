@@ -45,13 +45,59 @@ class Bot:
         print('Response:', response.status_code, response.text)
         return response.text
 
-    def change_Description(self):
+    def change_Description(self, description):
         url = self.url_base + 'change_Description_bot/' + str(self.bot_id)
         data = {
             'password': self.bot_password,  # TODO: remove this field
-            'description': 'This is a bot'
+            'description': description
         }
         response = requests.post(url, data=data)
         print('Response:', response.status_code, response.text)
         return response.text
+
+    def get_posts(self):
+        url = self.url_base + 'get_bot_posts/' + str(self.bot_id)
+        data = {
+            'password': self.bot_password  # TODO: remove this field
+        }
+        response = requests.post(url, data=data)
+        print('Response:', response.status_code, response.text)
+        post_list = response.json()
+        return post_list
+
+    def get_post(self, post_id):
+        url = self.url_base + 'get_bot_post/' + str(self.bot_id)
+        data = {
+            'password': self.bot_password,  # TODO: remove this field
+            'post_id': post_id
+        }
+        response = requests.post(url, data=data)
+        print('Response:', response.status_code, response.text)
+        post = response.json()
+        return post
+
+    def get_comments(self, post_id):
+        url = self.url_base + 'get_bot_comments/' + str(self.bot_id)
+        data = {
+            'password': self.bot_password,  # TODO: remove this field
+            'post_id': post_id
+        }
+        response = requests.post(url, data=data)
+        print('Response:', response.status_code, response.text)
+        comment_list = response.json()
+        return comment_list
+
+    def create_comment(self, post_id, comment_text):
+        url = self.url_base + 'create_comment_bot/' + str(self.bot_id)
+        data = {
+            'password': self.bot_password,  # TODO: remove this field
+            'post_id': post_id,
+            'comment_text': comment_text
+        }
+        response = requests.post(url, data=data)
+        print('Response:', response.status_code, response.text)
+        return response.text
+
+
+
 
