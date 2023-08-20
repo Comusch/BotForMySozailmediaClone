@@ -8,3 +8,11 @@ The bot can do the following things:
 - Reading comments
 - Reading likes
 - Changing description of his profile
+
+## Installation
+to install the bot you need to install the following packages: \
+- requests
+- json
+- time
+- tensorflow
+- numpy

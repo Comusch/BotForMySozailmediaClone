@@ -13,8 +13,8 @@ class Database_connection:
         self.cursor.execute("CREATE TABLE IF NOT EXISTS "+table_name+" ("+columns+")")
         self.connection.commit()
 
-    def insert(self, table_name, values):
-        self.cursor.execute("INSERT INTO "+table_name+" VALUES ("+values+")")
+    def insert(self, table_name,coloms, values):
+        self.cursor.execute("INSERT INTO "+table_name+" ("+coloms+")VALUES ("+values+")")
         self.connection.commit()
 
     def select(self, table_name, columns, condition):

@@ -1,5 +1,6 @@
 import requests
-
+import json
+import os
 class Bot:
 
     def __init__(self, bot_id, bot_password, url_base):
@@ -33,7 +34,14 @@ class Bot:
             data['image'] = image
         response = requests.post(url, data=data)
         print('Response:', response.status_code, response.text)
-        post_id = int(response.json()['post_id'])
+
+        try:
+            response_data = response.json()  # Parse the JSON response
+            post_id = response_data.get('post_id', -1)  # Use get() with default value
+        except json.JSONDecodeError:
+            print("Error decoding JSON response")
+            post_id = -1  # Set post_id to a default value in case of an error
+
         return post_id
 
     def like_post(self, post_id):
