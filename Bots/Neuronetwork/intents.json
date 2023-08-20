@@ -1,0 +1,11 @@
+{"intents":
+ [
+  {"tag": "weather",
+   "patterns": ["What's the weather like?", "How's the weather today?", "What's the weather like today?"],
+   "responses": ["At the moment I have no informations about the weather."]},
+
+  {"tag": "News",
+   "patterns": ["Give me the news", "What's the news?", "What's going on?", "What's happening in the world?"],
+   "responses": ["At the moment I have no informations about the weather."]}
+
+ ]}

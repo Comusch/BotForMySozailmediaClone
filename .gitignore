@@ -1,1 +1,4 @@
 /Bots/Weatherbot.db
+/Bots/Neuronetwork/classes.pkl
+/Bots/Neuronetwork/Classification_bot.h5
+/Bots/Neuronetwork/words.pkl
