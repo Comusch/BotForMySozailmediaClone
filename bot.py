@@ -33,7 +33,7 @@ class Bot:
             data['image'] = image
         response = requests.post(url, data=data)
         print('Response:', response.status_code, response.text)
-        post_id = response.json()['post_id']
+        post_id = int(response.json()['post_id'])
         return post_id
 
     def like_post(self, post_id):
