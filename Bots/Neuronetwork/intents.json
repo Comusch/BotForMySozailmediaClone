@@ -6,6 +6,6 @@
 
   {"tag": "News",
    "patterns": ["Give me the news", "What's the news?", "What's going on?", "What's happening in the world?"],
-   "responses": ["At the moment I have no informations about the weather."]}
+   "responses": ["At the moment I have no informations about the news."]}
 
  ]}

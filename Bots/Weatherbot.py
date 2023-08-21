@@ -4,6 +4,7 @@ import requests
 from bot import Bot
 from Database_connection import Database_connection
 from time import sleep
+import Imagedownloader as imgdl
 
 class Weatherbot(Bot):
 
@@ -29,11 +30,14 @@ class Weatherbot(Bot):
             city = self.city
         weather = self.whichweathertoday(city)  # Corrected typo here
         text = "Weather in " + city + " has " + weather.detailed_status+" and temperature is "+str(weather.temperature('celsius')['temp'])+"°C at the moment."
-        post_id = self.create_post(post_text=text, hashtags="#weather #"+city)
+        #imgdl.getImages returns a list of images, so we need to get the first one
+        image = imgdl.getImages("weather", 1, 0, "images")
+        post_id = self.create_post(post_text=text, hashtags="#weather #"+city, image=image)
         self.db.insert("Posts", "post_id, city", str(post_id)+", '"+city+"'")
         return post_id
 
 weatherbot = Weatherbot(6, "123456", "http://192.168.2.33:5000/", "Munich")
+weatherbot.post_weather()
 while True:
     post_ids = weatherbot.db.select("Posts", "post_id", "1=1")
     print(post_ids)
