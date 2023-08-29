@@ -31,8 +31,11 @@ class Bot:
             'hashtags': hashtags
         }
         if image:
-            data['image'] = image
-        response = requests.post(url, data=data)
+            with open(image, 'rb') as image_file:
+                files = {'image': ("image.png", image_file)}
+                response = requests.post(url, data=data, files=files)
+        else:
+            response = requests.post(url, data=data)
         print('Response:', response.status_code, response.text)
 
         try:

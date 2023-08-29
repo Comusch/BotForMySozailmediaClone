@@ -31,25 +31,42 @@ class Weatherbot(Bot):
         weather = self.whichweathertoday(city)  # Corrected typo here
         text = "Weather in " + city + " has " + weather.detailed_status+" and temperature is "+str(weather.temperature('celsius')['temp'])+"°C at the moment."
         #imgdl.getImages returns a list of images, so we need to get the first one
-        image = imgdl.getImages("weather", 1, 0, "images")
+        #this following database request is to prevent the bot from posting the same image twice
+        post_ids = self.db.select("Posts", "post_id", "city='"+city+"'")
+        print(post_ids)
+        if len(post_ids) < 3:
+            images = imgdl.getImages(city, 3, 1, "images")
+            image = images[len(post_ids)]
+            print(len(post_ids))
+        else:
+             images = imgdl.getImages(city, len(post_ids), 1, "images")
+             image = images[len(post_ids)-1]
+        #image is the path to the image on the bot's computer
         post_id = self.create_post(post_text=text, hashtags="#weather #"+city, image=image)
         self.db.insert("Posts", "post_id, city", str(post_id)+", '"+city+"'")
         return post_id
 
-weatherbot = Weatherbot(6, "123456", "http://192.168.2.33:5000/", "Munich")
+weatherbot = Weatherbot(6, "123456", "http://192.168.2.33:5000/", "Berlin")
+print("Weatherbot started")
 weatherbot.post_weather()
+'''
+
 while True:
     post_ids = weatherbot.db.select("Posts", "post_id", "1=1")
     print(post_ids)
     for post_id in post_ids:
-        print(post_id[0])
-        comments = weatherbot.get_comments(post_id[0])
-        print(comments)
-        size = len(comments)
-        if size > 0:
-            if comments[size-1]["text"] == "weather":
-                weather = weatherbot.whichweathertoday(weatherbot.city)
-                text = "Weather in " + weatherbot.city + " has " + weather.detailed_status + " and temperature is " + str(weather.temperature('celsius')['temp']) + "°C at the moment."
-                weatherbot.db.insert("Comments", "comment_id, post_id, city", str(comments[size-1]["id"]+1)+", "+str(post_id[0])+", '"+weatherbot.city+"'")
-                weatherbot.create_comment(post_id[0], text)
+        if post_id[0] > 0:
+            print(post_id[0])
+            comments = weatherbot.get_comments(post_id[0])
+            print(comments)
+            size = len(comments)
+            if size > 0:
+                if comments[size-1]["text"] == "weather":
+                    weather = weatherbot.whichweathertoday(weatherbot.city)
+                    text = "Weather in " + weatherbot.city + " has " + weather.detailed_status + " and temperature is " + str(weather.temperature('celsius')['temp']) + "°C at the moment."
+                    weatherbot.db.insert("Comments", "comment_id, post_id, city", str(comments[size-1]["id"]+1)+", "+str(post_id[0])+", '"+weatherbot.city+"'")
+                    weatherbot.create_comment(post_id[0], text)
+        else:
+            print("This post don't exist anymore")
     sleep(2) # Sleep for 60 seconds
+'''

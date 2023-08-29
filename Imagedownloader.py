@@ -16,23 +16,23 @@ def save_urls(filename, urls):
         for url in urls:
             file.write(url + '\n')
 
-def download_image(url, folder_path):
+def download_image(url, folder_path, name):
     try:
         response = requests.get(url)
         if response.status_code == 200:
             image_data = BytesIO(response.content)
             img = Image.open(image_data)
             img_name = url.split('/')[-1]
-            img_path = os.path.join(folder_path, img_name)
+            img_path = os.path.join(folder_path, f"{name}.jpg")
             img.save(img_path)
-            print(f"Downloaded: {img_name}")
+            print(f"Downloaded: {img_name} and saved as {name}.jpg in {folder_path}")
             return img
         else:
             print(f"Failed to download: {url} (Status Code: {response.status_code})")
     except Exception as e:
         print(f"An error occurred while downloading {url}: {e}")
 
-def search_images(keyword, num_images, folder_path, previous_urls):
+def search_images(keyword, num_images, folder_path):
     url = f"https://pixabay.com/api/?key={PIXABAY_API_KEY}&q={keyword}&per_page={num_images}"
     images = []
     try:
@@ -40,26 +40,24 @@ def search_images(keyword, num_images, folder_path, previous_urls):
         if response.status_code == 200:
             data = response.json()
             for item in data["hits"]:
-                if item["largeImageURL"] not in previous_urls:
-                    images.append(download_image(item["largeImageURL"], folder_path))
-                    previous_urls.append(item["largeImageURL"])
+                download_image(item["largeImageURL"], folder_path, name=keyword+"_"+str(item["id"]))
+                images.append(folder_path+"/"+keyword+"_"+str(item["id"])+".jpg")
         else:
+            print(response.status_code)
             print(f"Failed to fetch images for keyword '{keyword}'")
         return images
     except Exception as e:
         print(f"An error occurred while searching for '{keyword}': {e}")
 
 def getImages(keyword, num_images, num_of_the_city, folder_path):
-    num_images_per_keyword = num_images + num_of_the_city
+    num_images_per_keyword = num_images
     download_folder = folder_path
     os.makedirs(download_folder, exist_ok=True)
 
-    previous_urls = load_previous_urls("previous_urls.txt")
-    images = search_images(keyword, num_images_per_keyword, download_folder, previous_urls)
+    images = search_images(keyword, num_images_per_keyword, download_folder)
     print(f"Found {len(images)} images")
-    save_urls("previous_urls.txt", previous_urls)
 
     return images
 
 if __name__ == "__main__":
-    getImages("weather", 1, 1, "images")
+    getImages("Munich", 3, 1, "images")
